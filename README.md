@@ -54,7 +54,7 @@ A full-stack authentication application built with MongoDB, Express.js, React, a
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/mern-auth-app.git
+   git clone https://github.com/balasrinivas41/mern-auth-app.git
    cd mern-auth-app
    ```
 
