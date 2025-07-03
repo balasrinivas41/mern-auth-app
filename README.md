@@ -1312,6 +1312,167 @@ copies or substantial portions of the Software.
 
 ---
 
+## 🗄️ Database Management Commands
+
+### MongoDB Connection and Inspection
+
+#### Connect to MongoDB Shell
+```bash
+# Connect to MongoDB shell
+mongosh
+
+# Connect to specific database
+mongosh mern_auth
+
+# Connect with connection string
+mongosh mongodb://localhost:27017/mern_auth
+```
+
+#### Database and Collection Operations
+```bash
+# Show all databases
+show dbs
+
+# Switch to mern_auth database
+use mern_auth
+
+# Show all collections
+show collections
+
+# Get database stats
+db.stats()
+```
+
+#### Document Operations
+
+**View Documents:**
+```bash
+# Find all documents in users collection
+db.users.find()
+
+# Find all documents with pretty formatting
+db.users.find().pretty()
+
+# Find first document only
+db.users.findOne()
+
+# Count total documents
+db.users.countDocuments()
+
+# Find specific user by username
+db.users.find({username: "bala"})
+
+# Find by ObjectId
+db.users.find({_id: ObjectId("6867100dc4e21f3ccab3af52")})
+```
+
+**Filter and Sort:**
+```bash
+# Show only specific fields
+db.users.find({}, {username: 1, createdAt: 1})
+
+# Sort by creation date (newest first)
+db.users.find().sort({createdAt: -1})
+
+# Sort by username alphabetically
+db.users.find().sort({username: 1})
+
+# Limit results
+db.users.find().limit(5)
+
+# Skip and limit for pagination
+db.users.find().skip(5).limit(5)
+```
+
+**Advanced Queries:**
+```bash
+# Find users created after specific date
+db.users.find({createdAt: {$gt: new Date("2023-01-01")}})
+
+# Find users with username containing specific text
+db.users.find({username: {$regex: "bala", $options: "i"}})
+
+# Find users created in last 24 hours
+db.users.find({createdAt: {$gte: new Date(Date.now() - 24*60*60*1000)}})
+```
+
+#### One-liner Commands (without entering shell)
+```bash
+# View all users with formatting
+mongosh mern_auth --eval "db.users.find().pretty()"
+
+# Count total users
+mongosh mern_auth --eval "db.users.countDocuments()"
+
+# Show collections
+mongosh mern_auth --eval "show collections"
+
+# Find specific user
+mongosh mern_auth --eval "db.users.find({username: 'bala'}).pretty()"
+
+# Get latest 5 users
+mongosh mern_auth --eval "db.users.find().sort({createdAt: -1}).limit(5).pretty()"
+```
+
+#### Database Maintenance
+```bash
+# Create backup
+mongodump --db mern_auth --out /path/to/backup
+
+# Restore backup
+mongorestore --db mern_auth /path/to/backup/mern_auth
+
+# Drop database (WARNING: This deletes all data!)
+mongosh mern_auth --eval "db.dropDatabase()"
+
+# Create index on username field
+mongosh mern_auth --eval "db.users.createIndex({username: 1})"
+
+# Show all indexes
+mongosh mern_auth --eval "db.users.getIndexes()"
+```
+
+#### Monitoring and Performance
+```bash
+# Show current operations
+mongosh mern_auth --eval "db.currentOp()"
+
+# Database profiling
+mongosh mern_auth --eval "db.setProfilingLevel(2)"
+
+# Get profiling data
+mongosh mern_auth --eval "db.system.profile.find().pretty()"
+
+# Server status
+mongosh --eval "db.serverStatus()"
+```
+
+#### Exit MongoDB Shell
+```bash
+# Exit from MongoDB shell
+exit
+```
+
+### Example Usage for Your App
+
+After registering users through your app, you can inspect the data:
+
+```bash
+# Check all registered users
+mongosh mern_auth --eval "db.users.find({}, {username: 1, createdAt: 1}).pretty()"
+
+# Count registered users
+mongosh mern_auth --eval "db.users.countDocuments()"
+
+# Find users registered today
+mongosh mern_auth --eval "db.users.find({createdAt: {$gte: new Date(new Date().setHours(0,0,0,0))}}).pretty()"
+
+# Check password hashing (passwords should be hashed, not plain text)
+mongosh mern_auth --eval "db.users.findOne({}, {username: 1, password: 1})"
+```
+
+---
+
 ## 🙏 Acknowledgments
 
 - **React Team** for the amazing frontend framework
