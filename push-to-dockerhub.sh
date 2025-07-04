@@ -11,24 +11,24 @@ echo ""
 
 # Check if images exist
 echo "📦 Checking if Docker images are built..."
-if ! docker images | grep -q "balasrinivas41/mern-auth-backend"; then
+if ! docker images | grep -q "balasrinivasdevanaboyina/mern-auth-backend"; then
     echo "❌ Backend image not found. Please build images first."
     exit 1
 fi
 
-if ! docker images | grep -q "balasrinivas41/mern-auth-frontend"; then
+if ! docker images | grep -q "balasrinivasdevanaboyina/mern-auth-frontend"; then
     echo "❌ Frontend image not found. Please build images first."
     exit 1
 fi
 
 echo "✅ Docker images found:"
-docker images | grep balasrinivas41
+docker images | grep balasrinivasdevanaboyina
 echo ""
 
 # Login to Docker Hub
 echo "🔐 Logging in to Docker Hub..."
 echo "Enter your Docker Hub credentials:"
-docker login -u balasrinivas41
+docker login -u balasrinivasdevanaboyina
 
 if [ $? -ne 0 ]; then
     echo "❌ Docker Hub login failed. Please check your credentials."
@@ -40,22 +40,22 @@ echo ""
 
 # Push backend images
 echo "📤 Pushing backend images to Docker Hub..."
-echo "Pushing balasrinivas41/mern-auth-backend:latest..."
-docker push balasrinivas41/mern-auth-backend:latest
+echo "Pushing balasrinivasdevanaboyina/mern-auth-backend:latest..."
+docker push balasrinivasdevanaboyina/mern-auth-backend:latest
 
-echo "Pushing balasrinivas41/mern-auth-backend:v1.0..."
-docker push balasrinivas41/mern-auth-backend:v1.0
+echo "Pushing balasrinivasdevanaboyina/mern-auth-backend:v1.0..."
+docker push balasrinivasdevanaboyina/mern-auth-backend:v1.0
 
 echo "✅ Backend images pushed successfully!"
 echo ""
 
 # Push frontend images
 echo "📤 Pushing frontend images to Docker Hub..."
-echo "Pushing balasrinivas41/mern-auth-frontend:latest..."
-docker push balasrinivas41/mern-auth-frontend:latest
+echo "Pushing balasrinivasdevanaboyina/mern-auth-frontend:latest..."
+docker push balasrinivasdevanaboyina/mern-auth-frontend:latest
 
-echo "Pushing balasrinivas41/mern-auth-frontend:v1.0..."
-docker push balasrinivas41/mern-auth-frontend:v1.0
+echo "Pushing balasrinivasdevanaboyina/mern-auth-frontend:v1.0..."
+docker push balasrinivasdevanaboyina/mern-auth-frontend:v1.0
 
 echo "✅ Frontend images pushed successfully!"
 echo ""
@@ -64,8 +64,8 @@ echo ""
 echo "🎉 All images successfully pushed to Docker Hub!"
 echo ""
 echo "📍 Your Docker Hub repositories:"
-echo "   Backend:  https://hub.docker.com/r/balasrinivas41/mern-auth-backend"
-echo "   Frontend: https://hub.docker.com/r/balasrinivas41/mern-auth-frontend"
+echo "   Backend:  https://hub.docker.com/r/balasrinivasdevanaboyina/mern-auth-backend"
+echo "   Frontend: https://hub.docker.com/r/balasrinivasdevanaboyina/mern-auth-frontend"
 echo ""
 echo "🚀 Anyone can now run your app with:"
 echo "   curl -O https://raw.githubusercontent.com/balasrinivas41/mern-auth-app/main/docker-compose.hub.yml"

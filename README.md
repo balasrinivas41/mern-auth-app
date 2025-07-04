@@ -9,8 +9,31 @@ A comprehensive, production-ready full-stack authentication system built with th
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
+## 🚀 Quick Run from Docker Hub
+
+**Want to try the app immediately? Run it with one command!**
+
+```bash
+# Download and run the MERN authentication app
+curl -O https://raw.githubusercontent.com/balasrinivas41/mern-auth-app/main/docker-compose.hub.yml
+docker compose -f docker-compose.hub.yml up -d
+```
+
+**Access your app:**
+- 🌐 **Frontend**: http://localhost:3001
+- ⚡ **Backend API**: http://localhost:5000  
+- 🗄️ **MongoDB**: localhost:27018
+
+**Stop the app:**
+```bash
+docker compose -f docker-compose.hub.yml down
+```
+
+---
+
 ## 📋 Table of Contents
 
+- [🚀 Quick Run from Docker Hub](#-quick-run-from-docker-hub)
 - [🎯 Overview](#-overview)
 - [✨ Features](#-features)
 - [🏗️ Architecture](#️-architecture)
@@ -215,6 +238,32 @@ docker compose -f docker-compose.hub.yml up -d
 # MongoDB: localhost:27018
 ```
 
+### 🎯 Step-by-Step Instructions
+
+1. **Download the compose file:**
+   ```bash
+   curl -O https://raw.githubusercontent.com/balasrinivas41/mern-auth-app/main/docker-compose.hub.yml
+   ```
+
+2. **Start the application:**
+   ```bash
+   docker compose -f docker-compose.hub.yml up -d
+   ```
+
+3. **Open your browser and navigate to:**
+   - **Frontend**: http://localhost:3001
+   - **API**: http://localhost:5000
+
+4. **Use the application:**
+   - Register a new user account
+   - Login with your credentials
+   - Access the protected dashboard
+
+5. **Stop the application:**
+   ```bash
+   docker compose -f docker-compose.hub.yml down
+   ```
+
 ### 📦 Available Docker Images
 
 Our application is available as pre-built Docker images on Docker Hub:
@@ -290,17 +339,56 @@ volumes:
 # Start services
 docker compose -f docker-compose.hub.yml up -d
 
-# View status
+# View running containers
 docker compose -f docker-compose.hub.yml ps
 
-# View logs
+# View logs (all services)
 docker compose -f docker-compose.hub.yml logs -f
+
+# View logs (specific service)
+docker compose -f docker-compose.hub.yml logs backend
+docker compose -f docker-compose.hub.yml logs frontend
+docker compose -f docker-compose.hub.yml logs mongodb
 
 # Stop services
 docker compose -f docker-compose.hub.yml down
 
+# Stop and remove volumes (reset database)
+docker compose -f docker-compose.hub.yml down -v
+
 # Update to latest images
 docker compose -f docker-compose.hub.yml pull
+docker compose -f docker-compose.hub.yml up -d
+
+# Restart specific service
+docker compose -f docker-compose.hub.yml restart backend
+```
+
+### 🔧 Troubleshooting
+
+**Port conflicts:**
+```bash
+# Check what's using the ports
+lsof -i :3001  # Frontend port
+lsof -i :5000  # Backend port
+lsof -i :27018 # MongoDB port
+```
+
+**View container health:**
+```bash
+# Check container status
+docker compose -f docker-compose.hub.yml ps
+
+# Check health of backend service
+curl http://localhost:5000/health
+```
+
+**Reset application:**
+```bash
+# Stop and remove everything
+docker compose -f docker-compose.hub.yml down -v
+
+# Start fresh
 docker compose -f docker-compose.hub.yml up -d
 ```
 

@@ -12,7 +12,7 @@
 docker login
 
 # Alternative: Login with username directly
-docker login -u balasrinivas41
+docker login -u balasrinivasdevanaboyina
 ```
 
 ## Step 2: Push Images to Docker Hub
@@ -21,19 +21,19 @@ The images are already built and tagged. Push them to Docker Hub:
 
 ```bash
 # Push backend image
-docker push balasrinivas41/mern-auth-backend:latest
-docker push balasrinivas41/mern-auth-backend:v1.0
+docker push balasrinivasdevanaboyina/mern-auth-backend:latest
+docker push balasrinivasdevanaboyina/mern-auth-backend:v1.0
 
 # Push frontend image
-docker push balasrinivas41/mern-auth-frontend:latest
-docker push balasrinivas41/mern-auth-frontend:v1.0
+docker push balasrinivasdevanaboyina/mern-auth-frontend:latest
+docker push balasrinivasdevanaboyina/mern-auth-frontend:v1.0
 ```
 
 ## Step 3: Verify Images on Docker Hub
 
 After pushing, verify the images are available:
-- Backend: https://hub.docker.com/r/balasrinivas41/mern-auth-backend
-- Frontend: https://hub.docker.com/r/balasrinivas41/mern-auth-frontend
+- Backend: https://hub.docker.com/r/balasrinivasdevanaboyina/mern-auth-backend
+- Frontend: https://hub.docker.com/r/balasrinivasdevanaboyina/mern-auth-frontend
 
 ## Step 4: Test Deployment from Docker Hub
 
@@ -77,14 +77,14 @@ docker compose -f docker-compose.hub.yml up -d
 
 ## Image Information
 
-- **Backend Image**: `balasrinivas41/mern-auth-backend`
+- **Backend Image**: `balasrinivasdevanaboyina/mern-auth-backend`
   - Base: `node:18-alpine`
-  - Size: ~100MB
+  - Size: ~171MB
   - Features: Express.js, MongoDB, JWT, bcrypt, health checks
 
-- **Frontend Image**: `balasrinivas41/mern-auth-frontend`
+- **Frontend Image**: `balasrinivasdevanaboyina/mern-auth-frontend`
   - Base: `nginx:alpine` 
-  - Size: ~25MB
+  - Size: ~54MB
   - Features: React, TypeScript, responsive design
 
 ## Security Note
