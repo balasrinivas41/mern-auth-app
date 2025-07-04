@@ -17,6 +17,7 @@ A comprehensive, production-ready full-stack authentication system built with th
 - [🗂️ Project Structure](#️-project-structure)
 - [⚙️ Prerequisites](#️-prerequisites)
 - [🚀 Quick Start](#-quick-start)
+- [🐳 Docker Hub Deployment](#-docker-hub-deployment)
 - [📦 Manual Installation](#-manual-installation)
 - [🐳 Docker Deployment](#-docker-deployment)
 - [🔧 Configuration](#-configuration)
@@ -196,6 +197,112 @@ docker compose up --build
 ```
 
 That's it! Your complete MERN authentication system is now running.
+
+## 🐳 Docker Hub Deployment
+
+### 🚀 One-Command Setup (No Build Required)
+
+The easiest way to run this application is using our pre-built Docker images from Docker Hub:
+
+```bash
+# Download and run with one command
+curl -O https://raw.githubusercontent.com/balasrinivas41/mern-auth-app/main/docker-compose.hub.yml
+docker compose -f docker-compose.hub.yml up -d
+
+# Access the application
+# Frontend: http://localhost:3001
+# Backend: http://localhost:5000
+# MongoDB: localhost:27018
+```
+
+### 📦 Available Docker Images
+
+Our application is available as pre-built Docker images on Docker Hub:
+
+| Service | Docker Hub Repository | Size | Description |
+|---------|----------------------|------|-------------|
+| **Backend** | [`balasrinivas41/mern-auth-backend`](https://hub.docker.com/r/balasrinivas41/mern-auth-backend) | ~100MB | Express.js API with JWT auth |
+| **Frontend** | [`balasrinivas41/mern-auth-frontend`](https://hub.docker.com/r/balasrinivas41/mern-auth-frontend) | ~25MB | React app with Nginx |
+
+### 🏃‍♂️ Quick Commands
+
+```bash
+# Pull images manually
+docker pull balasrinivas41/mern-auth-backend:latest
+docker pull balasrinivas41/mern-auth-frontend:latest
+
+# Run backend only
+docker run -d -p 5000:5000 \
+  -e MONGODB_URI=mongodb://host.docker.internal:27017/mern_auth \
+  -e JWT_SECRET=your_secret_key \
+  balasrinivas41/mern-auth-backend:latest
+
+# Run frontend only  
+docker run -d -p 3001:80 balasrinivas41/mern-auth-frontend:latest
+```
+
+### 🔧 Production Deployment
+
+For production use, create your own `docker-compose.yml`:
+
+```yaml
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: mern_auth
+
+  backend:
+    image: balasrinivas41/mern-auth-backend:latest
+    ports:
+      - "5000:5000"
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/mern_auth
+      JWT_SECRET: ${JWT_SECRET:-change_this_in_production}
+      NODE_ENV: production
+
+  frontend:
+    image: balasrinivas41/mern-auth-frontend:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongodb_data:
+```
+
+### ⚡ Benefits of Docker Hub Deployment
+
+- ✅ **No Build Time**: Pre-built images start instantly
+- ✅ **Consistent Environment**: Same images across all deployments  
+- ✅ **Reduced Bandwidth**: Cached layers minimize download time
+- ✅ **Version Control**: Tagged releases (v1.0, latest)
+- ✅ **Easy Updates**: Pull latest images for updates
+
+### 🛠️ Managing the Application
+
+```bash
+# Start services
+docker compose -f docker-compose.hub.yml up -d
+
+# View status
+docker compose -f docker-compose.hub.yml ps
+
+# View logs
+docker compose -f docker-compose.hub.yml logs -f
+
+# Stop services
+docker compose -f docker-compose.hub.yml down
+
+# Update to latest images
+docker compose -f docker-compose.hub.yml pull
+docker compose -f docker-compose.hub.yml up -d
+```
 
 ## 📦 Manual Installation
 
