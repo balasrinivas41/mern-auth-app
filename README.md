@@ -1670,17 +1670,6 @@ mongosh mern_auth --eval "db.users.findOne({}, {username: 1, password: 1})"
 
 ---
 
-## 🙏 Acknowledgments
-
-- **React Team** for the amazing frontend framework
-- **Express.js Team** for the lightweight backend framework
-- **MongoDB Team** for the flexible database solution
-- **JWT.io** for JWT token standards
-- **Docker Team** for containerization technology
-- **Open Source Community** for continuous inspiration
-
----
-
 ## 📞 Support & Contact
 
 - **GitHub Issues**: [Create an issue](https://github.com/balasrinivas41/mern-auth-app/issues)
