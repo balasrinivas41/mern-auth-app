@@ -221,24 +221,24 @@ Our application is available as pre-built Docker images on Docker Hub:
 
 | Service | Docker Hub Repository | Size | Description |
 |---------|----------------------|------|-------------|
-| **Backend** | [`balasrinivas41/mern-auth-backend`](https://hub.docker.com/r/balasrinivas41/mern-auth-backend) | ~100MB | Express.js API with JWT auth |
-| **Frontend** | [`balasrinivas41/mern-auth-frontend`](https://hub.docker.com/r/balasrinivas41/mern-auth-frontend) | ~25MB | React app with Nginx |
+| **Backend** | [`balasrinivasdevanaboyina/mern-auth-backend`](https://hub.docker.com/r/balasrinivasdevanaboyina/mern-auth-backend) | ~100MB | Express.js API with JWT auth |
+| **Frontend** | [`balasrinivasdevanaboyina/mern-auth-frontend`](https://hub.docker.com/r/balasrinivasdevanaboyina/mern-auth-frontend) | ~25MB | React app with Nginx |
 
 ### 🏃‍♂️ Quick Commands
 
 ```bash
 # Pull images manually
-docker pull balasrinivas41/mern-auth-backend:latest
-docker pull balasrinivas41/mern-auth-frontend:latest
+docker pull balasrinivasdevanaboyina/mern-auth-backend:latest
+docker pull balasrinivasdevanaboyina/mern-auth-frontend:latest
 
 # Run backend only
 docker run -d -p 5000:5000 \
   -e MONGODB_URI=mongodb://host.docker.internal:27017/mern_auth \
   -e JWT_SECRET=your_secret_key \
-  balasrinivas41/mern-auth-backend:latest
+  balasrinivasdevanaboyina/mern-auth-backend:latest
 
 # Run frontend only  
-docker run -d -p 3001:80 balasrinivas41/mern-auth-frontend:latest
+docker run -d -p 3001:80 balasrinivasdevanaboyina/mern-auth-frontend:latest
 ```
 
 ### 🔧 Production Deployment
@@ -257,7 +257,7 @@ services:
       MONGO_INITDB_DATABASE: mern_auth
 
   backend:
-    image: balasrinivas41/mern-auth-backend:latest
+    image: balasrinivasdevanaboyina/mern-auth-backend:latest
     ports:
       - "5000:5000"
     environment:
@@ -266,7 +266,7 @@ services:
       NODE_ENV: production
 
   frontend:
-    image: balasrinivas41/mern-auth-frontend:latest
+    image: balasrinivasdevanaboyina/mern-auth-frontend:latest
     ports:
       - "80:80"
     depends_on:

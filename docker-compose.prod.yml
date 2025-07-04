@@ -18,7 +18,7 @@ services:
 
   # Backend API (from Docker Hub)
   backend:
-    image: balasrinivas41/mern-auth-backend:latest
+    image: balasrinivasdevanaboyina/mern-auth-backend:latest
     container_name: mern_auth_backend
     restart: unless-stopped
     ports:
@@ -35,7 +35,7 @@ services:
 
   # Frontend React App (from Docker Hub)
   frontend:
-    image: balasrinivas41/mern-auth-frontend:latest
+    image: balasrinivasdevanaboyina/mern-auth-frontend:latest
     container_name: mern_auth_frontend
     restart: unless-stopped
     ports:
