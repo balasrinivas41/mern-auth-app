@@ -141,6 +141,8 @@ mern-auth-app/
 │   │   │   ├── 📄 Login.tsx        # Login form component
 │   │   │   ├── 📄 Register.tsx     # Registration form component
 │   │   │   └── 📄 Dashboard.tsx    # Protected dashboard component
+│   │   ├── 📁 config/              # Configuration files
+│   │   │   └── 📄 api.ts           # API endpoint configuration
 │   │   ├── 📄 App.tsx              # Main application component
 │   │   ├── 📄 App.css              # Application styles
 │   │   ├── 📄 index.tsx            # React entry point
