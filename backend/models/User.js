@@ -61,6 +61,9 @@ userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
   
   try {
+    console.log(`🔐 Starting password hashing for user: ${this.username}`);
+    const hashStartTime = Date.now();
+    
     // Generate a salt with complexity factor of 10
     // What is salt? Random data added to password before hashing
     // Why salt? Prevents rainbow table attacks and makes each hash unique
@@ -71,11 +74,15 @@ userSchema.pre('save', async function(next) {
     // This creates a secure, irreversible hash of the password
     this.password = await bcrypt.hash(this.password, salt);
     
+    const hashDuration = Date.now() - hashStartTime;
+    console.log(`✅ Password hashed successfully in ${hashDuration}ms`);
+    
     // Continue with the save operation
     next();
   } catch (error) {
     // If hashing fails, pass the error to the next middleware
     // This will prevent the user from being saved with an unhashed password
+    console.error(`💥 Password hashing failed for user ${this.username}:`, error.message);
     next(error);
   }
 });
@@ -95,7 +102,15 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
   // Use bcrypt.compare to securely compare the plain text password
   // with the hashed password stored in the database
   // Returns true if passwords match, false otherwise
-  return await bcrypt.compare(candidatePassword, this.password);
+  console.log(`🔍 Comparing password for user: ${this.username}`);
+  const compareStartTime = Date.now();
+  
+  const isMatch = await bcrypt.compare(candidatePassword, this.password);
+  
+  const compareDuration = Date.now() - compareStartTime;
+  console.log(`${isMatch ? '✅' : '❌'} Password comparison completed in ${compareDuration}ms - Match: ${isMatch}`);
+  
+  return isMatch;
 };
 
 /**

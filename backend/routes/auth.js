@@ -31,6 +31,11 @@ const router = express.Router();       // Create a router instance for organizin
  * - Provides immediate authentication after registration
  */
 router.post('/register', async (req, res) => {
+  const startTime = Date.now();
+  const requestId = Math.random().toString(36).substr(2, 9);
+  
+  console.log(`🚀 [${requestId}] Registration attempt started for username: ${req.body.username}`);
+  
   try {
     // Extract username and password from request body
     // Destructuring makes the code cleaner and more readable
@@ -39,6 +44,7 @@ router.post('/register', async (req, res) => {
     // Input validation - ensure both fields are provided
     // Why validate? Prevents incomplete registrations and database errors
     if (!username || !password) {
+      console.log(`❌ [${requestId}] Registration failed: Missing fields`);
       return res.status(400).json({ 
         message: 'Username and password are required',
         error: 'MISSING_FIELDS'
@@ -47,8 +53,10 @@ router.post('/register', async (req, res) => {
 
     // Check if username already exists in the database
     // Why check? Prevents duplicate usernames and ensures uniqueness
+    console.log(`🔍 [${requestId}] Checking if username exists...`);
     const existingUser = await User.findOne({ username });
     if (existingUser) {
+      console.log(`❌ [${requestId}] Registration failed: Username already exists`);
       return res.status(400).json({ 
         message: 'Username already exists',
         error: 'DUPLICATE_USERNAME'
@@ -57,8 +65,10 @@ router.post('/register', async (req, res) => {
 
     // Create new user instance
     // The password will be automatically hashed by the User model's pre-save middleware
+    console.log(`💾 [${requestId}] Creating new user...`);
     const user = new User({ username, password });
     await user.save();
+    console.log(`✅ [${requestId}] User created successfully with ID: ${user._id}`);
 
     // Generate JWT token for the new user
     // Why JWT? Stateless authentication that doesn't require server-side sessions
@@ -74,6 +84,9 @@ router.post('/register', async (req, res) => {
 
     // Send success response with token and user info
     // Status 201 = Created (new resource was successfully created)
+    const duration = Date.now() - startTime;
+    console.log(`🎉 [${requestId}] Registration successful! Duration: ${duration}ms`);
+    
     res.status(201).json({
       message: 'User registered successfully',
       token,
@@ -86,7 +99,9 @@ router.post('/register', async (req, res) => {
 
   } catch (error) {
     // Handle any unexpected errors during registration
-    console.error('Registration error:', error);
+    const duration = Date.now() - startTime;
+    console.error(`💥 [${requestId}] Registration error after ${duration}ms:`, error.message);
+    console.error(`   Stack trace:`, error.stack);
     
     // Send generic error message to client (don't expose internal errors)
     res.status(500).json({ 
@@ -110,6 +125,11 @@ router.post('/register', async (req, res) => {
  * - Provides JWT tokens for accessing protected resources
  */
 router.post('/login', async (req, res) => {
+  const startTime = Date.now();
+  const requestId = Math.random().toString(36).substr(2, 9);
+  
+  console.log(`🔐 [${requestId}] Login attempt started for username: ${req.body.username}`);
+  
   try {
     // Extract login credentials from request body
     const { username, password } = req.body;
@@ -117,6 +137,7 @@ router.post('/login', async (req, res) => {
     // Input validation - ensure both fields are provided
     // Why validate? Prevents incomplete login attempts
     if (!username || !password) {
+      console.log(`❌ [${requestId}] Login failed: Missing credentials`);
       return res.status(400).json({ 
         message: 'Username and password are required',
         error: 'MISSING_CREDENTIALS'
@@ -125,10 +146,12 @@ router.post('/login', async (req, res) => {
 
     // Find user by username in the database
     // Why not case-sensitive? Usernames are typically case-sensitive for security
+    console.log(`🔍 [${requestId}] Looking up user in database...`);
     const user = await User.findOne({ username });
     if (!user) {
       // Generic error message to prevent username enumeration attacks
       // Why generic? Prevents attackers from knowing which usernames exist
+      console.log(`❌ [${requestId}] Login failed: User not found`);
       return res.status(400).json({ 
         message: 'Invalid credentials',
         error: 'INVALID_CREDENTIALS'
@@ -137,9 +160,11 @@ router.post('/login', async (req, res) => {
 
     // Compare provided password with hashed password in database
     // Uses the comparePassword method from the User model
+    console.log(`🔐 [${requestId}] Verifying password...`);
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       // Same generic error message for consistency
+      console.log(`❌ [${requestId}] Login failed: Invalid password`);
       return res.status(400).json({ 
         message: 'Invalid credentials',
         error: 'INVALID_CREDENTIALS'
@@ -158,6 +183,9 @@ router.post('/login', async (req, res) => {
     );
 
     // Send success response with token and user info
+    const duration = Date.now() - startTime;
+    console.log(`🎉 [${requestId}] Login successful! Duration: ${duration}ms`);
+    
     res.json({
       message: 'Login successful',
       token,
@@ -170,7 +198,9 @@ router.post('/login', async (req, res) => {
 
   } catch (error) {
     // Handle any unexpected errors during login
-    console.error('Login error:', error);
+    const duration = Date.now() - startTime;
+    console.error(`💥 [${requestId}] Login error after ${duration}ms:`, error.message);
+    console.error(`   Stack trace:`, error.stack);
     
     // Send generic error message to client
     res.status(500).json({ 

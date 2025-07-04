@@ -28,6 +28,30 @@ const app = express();
  * They have access to request and response objects and can modify them.
  */
 
+// Request logging middleware for debugging user interactions
+app.use((req, res, next) => {
+  const timestamp = new Date().toISOString();
+  const method = req.method;
+  const url = req.url;
+  const userAgent = req.get('User-Agent') || 'Unknown';
+  const ip = req.ip || req.connection.remoteAddress || 'Unknown';
+  
+  console.log(`🔍 [${timestamp}] ${method} ${url}`);
+  console.log(`   📱 User-Agent: ${userAgent}`);
+  console.log(`   🌍 IP: ${ip}`);
+  
+  if (req.body && Object.keys(req.body).length > 0) {
+    // Log request body but hide sensitive data
+    const sanitizedBody = { ...req.body };
+    if (sanitizedBody.password) {
+      sanitizedBody.password = '[HIDDEN]';
+    }
+    console.log(`   📦 Body:`, sanitizedBody);
+  }
+  
+  next();
+});
+
 // Enable CORS for all routes
 // Why: Allows our React frontend (localhost:3000/3001) to make requests to our API (localhost:5000)
 // Without this, browsers would block cross-origin requests for security reasons
