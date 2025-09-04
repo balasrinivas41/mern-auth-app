@@ -1,0 +1,169 @@
+
+# ===============================================================================
+# Docker Compose Configuration for MERN Authentication Application
+# ===============================================================================
+#
+# This file defines the multi-container setup for our MERN stack application.
+# It orchestrates MongoDB, Express.js backend, and React frontend services.
+#
+# Why Docker Compose?
+# - Simplifies multi-container application deployment
+# - Ensures consistent environments across development and production
+# - Manages service dependencies and networking automatically
+# - Provides easy scaling and service management
+#
+# Architecture Overview:
+# Frontend (React) -> Backend (Express/Node.js) -> Database (MongoDB)
+# ===============================================================================
+
+# Docker Compose file format version
+# Version 3.8 provides modern features and better compatibility
+version: '3.8'
+
+# Service definitions - each service runs in its own container
+services:
+  
+  # ============================================================================
+  # MongoDB Database Service
+  # ============================================================================
+  # 
+  # Provides persistent data storage for user accounts and authentication data.
+  # Uses MongoDB 7.0 for modern features and better performance.
+  #
+  mongodb:
+    image: mongo:7.0                    # Official MongoDB Docker image
+    container_name: mern_auth_mongodb   # Custom container name for easy identification
+    restart: unless-stopped            # Auto-restart on failure (but not if manually stopped)
+    
+    # Port mapping: host:container
+    # Why 27018? Avoids conflicts with local MongoDB installations on default port 27017
+    ports:
+      - "27018:27017"
+    
+    # Environment variables for MongoDB initialization
+    environment:
+      MONGO_INITDB_DATABASE: mern_auth  # Creates initial database on first run
+    
+    # Volume mappings for data persistence and initialization
+    volumes:
+      # Persistent data storage - survives container restarts
+      - mongodb_data:/data/db
+      # Initialization script for setting up database (read-only)
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    
+    # Connect to custom network for inter-service communication
+    networks:
+      - mern_network
+
+  # ============================================================================
+  # Backend API Service (Express.js + Node.js)
+  # ============================================================================
+  #
+  # Handles authentication logic, API endpoints, and database communication.
+  # Built from local Dockerfile for custom configuration.
+  #
+  backend:
+    # Build configuration - uses local Dockerfile
+    build: 
+      context: ./backend              # Build context (where to find Dockerfile)
+      dockerfile: Dockerfile          # Dockerfile name (could be different)
+    
+    container_name: mern_auth_backend # Custom container name
+    restart: unless-stopped          # Auto-restart policy
+    
+    # Port mapping for API access
+    ports:
+      - "5000:5000"                   # Expose backend API on port 5000
+    
+    # Environment variables for backend configuration
+    environment:
+      NODE_ENV: production            # Set production mode for optimizations
+      # MongoDB connection using service name (Docker DNS resolution)
+      MONGODB_URI: mongodb://mongodb:27017/mern_auth
+      # JWT secret for token signing (CHANGE IN PRODUCTION!)
+      JWT_SECRET: your_super_secret_jwt_key_change_this_in_production
+      PORT: 5000                      # Internal port for Express server
+    
+    # Service dependencies - ensures MongoDB starts before backend
+    depends_on:
+      - mongodb
+    
+    # Volume mappings for development
+    volumes:
+      - ./backend:/app                # Mount source code for development
+      - /app/node_modules            # Prevent overwriting node_modules
+    
+    networks:
+      - mern_network
+
+  # ============================================================================
+  # Frontend Service (React + Nginx)
+  # ============================================================================
+  #
+  # Serves the React application through Nginx web server.
+  # Built from local Dockerfile with production optimizations.
+  #
+  frontend:
+    # Build configuration with build arguments
+    build:
+      context: ./frontend             # Build context for React app
+      dockerfile: Dockerfile          # Production Dockerfile
+      args:
+        # API URL for frontend to communicate with backend
+        - REACT_APP_API_URL=http://localhost:5000
+    
+    container_name: mern_auth_frontend # Custom container name
+    restart: unless-stopped           # Auto-restart policy
+    
+    # Port mapping: host port 3001 maps to container port 80 (Nginx)
+    # Why 3001? Avoids conflicts with development React server on 3000
+    ports:
+      - "3001:80"
+    
+    # Service dependencies - ensures backend is ready before frontend
+    depends_on:
+      - backend
+    
+    networks:
+      - mern_network
+
+# =============================================================================
+# Network Configuration
+# =============================================================================
+#
+# Creates a custom bridge network for secure inter-service communication.
+# Services can communicate using service names as hostnames.
+#
+networks:
+  mern_network:
+    driver: bridge                    # Bridge driver for single-host networking
+
+# =============================================================================
+# Volume Configuration
+# =============================================================================
+#
+# Defines persistent storage volumes that survive container restarts.
+# Essential for maintaining database data across deployments.
+#
+volumes:
+  mongodb_data:
+    driver: local                     # Local storage driver for development
+
+# =============================================================================
+# Usage Instructions:
+# =============================================================================
+#
+# Development:
+#   docker-compose up --build        # Build and start all services
+#   docker-compose down              # Stop and remove containers
+#   docker-compose logs -f          # View real-time logs
+#
+# Production:
+#   docker-compose -f docker-compose.yml up -d
+#
+# Service Access:
+#   - Frontend: http://localhost:3001
+#   - Backend API: http://localhost:5000
+#   - MongoDB: localhost:27018
+#
+# =============================================================================
